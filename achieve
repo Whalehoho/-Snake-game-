@@ -1,0 +1,131 @@
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+static int width = 50, height = 20;
+static char ch;
+static int x = width / 2, y = height / 2;
+static int xtail[50], ytail[50],score = 0;
+static int fruitx = rand() % width, fruity = rand() % height;
+bool gameover = true,c;
+enum direction {Stop=0,Left,Right,Up,Down};
+direction D;
+
+
+void move_eat() {
+	int tailx1 = xtail[0];
+	int taily1 = ytail[0];
+	int tailx2, taily2;
+	xtail[0] = x;
+	ytail[0] = y;
+
+	if (x == fruitx && y == fruity) {
+		fruitx = rand() % width;
+		fruity = rand()  % height;
+		score++;
+		width--;
+		height--;
+	}
+
+	if (fruitx == 0)fruitx ++;
+	if (fruity == 0)fruity ++;
+
+	if (_kbhit()) {
+		ch = _getch();
+		if (ch == 'a')D=Left;
+		if (ch == 's')D=Down;
+		if (ch == 'd')D=Right;
+		if (ch == 'w')D=Up;
+		if (ch == 'q')D=Stop;
+	}
+
+	switch (D) {
+	case Left:x--;break;
+	case Right:x++;break;
+	case Up:y--;break;
+	case Down:y++;break;
+	
+	}
+
+	for (int k = 1;k < score;k++) {
+		
+		tailx2 = xtail[k];
+		taily2 = ytail[k];
+		xtail[k] = tailx1;
+		ytail[k] = taily1;
+		tailx1 = tailx2;
+		taily1 = taily2;
+		
+	}
+	
+	gameover = false;
+}
+
+void print() {
+	system("cls");
+	for (int w = 0;w <= width; w++) {
+		cout << '#';
+	}
+	cout << endl;
+	for (int h = 1;h < height;h++) {
+		for (int w = 0;w <= width; w++) {
+			c = false;
+			if (w == 0 || w == width) { cout << '#';c = true; }
+			else  if (w == x && h == y) { cout << '\2';c = true; }
+			else if (w == fruitx && h == fruity) { cout << "@";c = true; }
+			else {
+				for (int k = 0;k < score;k++) {
+					if (xtail[k]==w && ytail[k]==h) {
+						cout << 'o';
+						c = true;
+					}
+				}
+			}
+			if (c == false) cout << " ";
+		}
+		cout << endl;
+	}
+	for (int w = 0;w <= width; w++) {
+		cout << '#';
+		}
+	cout << endl;
+
+}
+
+
+void game() {
+	if (x == width || y == height||x==0||y==0) {
+		gameover = true;
+	}
+	for (int k = 1;k <= score;k++) {
+		if (xtail[k] == x && ytail[k] == y&&ch!='q') {
+			gameover = true;
+		}
+	}
+}
+
+int main() {
+	
+	do 
+	{ 
+		print();
+		move_eat();
+		game();
+		cout << "Score:" << score << endl;
+		if (gameover == true) {
+			/*for (int k = 0;k < score;k++) {
+				cout << tailx[k] << " ";
+			}
+			cout << endl;
+			for (int k = 0;k < score;k++) {
+				cout << taily[k] << " ";
+			}
+			cout << endl;
+			cout << x << endl << y;*/
+		}
+		
+	} while (gameover==false);
+	cout << "游戏结束" << endl;
+	system("Pause");
+  return 0;
+}
