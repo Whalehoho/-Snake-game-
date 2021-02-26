@@ -5,15 +5,15 @@ using namespace std;
 static int width = 50, height = 20;
 static char ch;
 static int x = width / 2, y = height / 2;
-static int xtail[50], ytail[50],score = 0,tailx1,taily1,tailx2,taily2;
+static int xtail[50], ytail[50], score = 0, tailx1, taily1, tailx2, taily2;
 static int fruitx = rand() % width, fruity = rand() % height;
-bool gameover = true,c;
-enum direction {Stop=0,Left,Right,Up,Down};
+bool gameover = true, c;
+enum class direction { Stop = 0, Left, Right, Up, Down };
 direction D;
 
 
 void move_eat() {
-	
+
 	tailx1 = xtail[0];
 	taily1 = ytail[0];
 	tailx2, taily2;
@@ -22,31 +22,31 @@ void move_eat() {
 
 	if (x == fruitx && y == fruity) {
 		fruitx = rand() % width;
-		fruity = rand()  % height;
+		fruity = rand() % height;
 		score++;
 		//width--;
 		//height--;
 	}
 
-	if (fruitx == 0)fruitx ++;
-	if (fruity == 0)fruity ++;
+	if (fruitx == 0)fruitx++;
+	if (fruity == 0)fruity++;
 
 	if (_kbhit()) {
 		ch = _getch();
-		if (ch == 'a')D=Left;
-		if (ch == 's')D=Down;
-		if (ch == 'd')D=Right;
-		if (ch == 'w')D=Up;
-		if (ch == 'q')D=Stop;
+		if (ch == 'a')D = direction::Left;
+		if (ch == 's')D = direction::Down;
+		if (ch == 'd')D = direction::Right;
+		if (ch == 'w')D = direction::Up;
+		if (ch == 'q')D = direction::Stop;
 	}
 
 	switch (D) {
-	case Left:x--;break;
-	case Right:x++;break;
-	case Up:y--;break;
-	case Down:y++;break;
-	case Stop:system("Pause");break;
-	
+	case direction::Left:x--;break;
+	case direction::Right:x++;break;
+	case direction::Up:y--;break;
+	case direction::Down:y++;break;
+	case direction::Stop:system("Pause");break;
+
 	}
 
 	for (int k = 1;k < score;k++) {
@@ -56,10 +56,10 @@ void move_eat() {
 		ytail[k] = taily1;
 		tailx1 = tailx2;
 		taily1 = taily2;
-		
-		
+
+
 	}
-	
+
 	gameover = false;
 }
 
@@ -76,69 +76,51 @@ void print() {
 			else  if (w == x && h == y) { cout << '\2';c = true; }
 			else if (w == fruitx && h == fruity) { cout << "$";c = true; }
 			else {
-				for (int k = 0;k < score;k++) {
-					if (xtail[k]==w && ytail[k]==h) {
-						cout << '\4';
+				for (int k = 0;k < score-1;k++) {
+					if (xtail[k] == w && ytail[k] == h) {
+						cout << '@';
 						c = true;
 					}
 				}
+				if (xtail[score-1] == w && ytail[score-1] == h) {
+					cout << '\4';
+					c = true;
+				}
+
 			}
 			if (c == false) cout << " ";
 		}
 		cout << endl;
 	}
+	
 	for (int w = 0;w <= width; w++) {
 		cout << '#';
-		}
-	cout << endl;
-	/*for (int k = 0;k <= score;k++) {
-		cout << "xtail[" << k << "]" << xtail[k] << " ";
 	}
-	cout << endl;
-	for (int k = 0;k <= score;k++) {
-		cout << "ytail[" << k << "]" << ytail[k] << " ";
-	}
-	cout << endl;
-	cout << "x,y:" << x << " " << y << endl;
-	cout << "tailx1:" << tailx1 << " " << "taily1:" << taily1 << endl << "tailx2:" << tailx2 << " " << "taily2:" << taily2 << endl;*/
-	
-
+cout << endl;
 }
 
 
 void game() {
-	if (x == width || y == height||x==0||y==0) {
+	if (x == width || y == height || x == 0 || y == 0) {
 		gameover = true;
 	}
 	for (int k = 1;k <= score;k++) {
-		if (xtail[k] == x && ytail[k] == y&&ch!='q') {
+		if (xtail[k] == x && ytail[k] == y && ch != 'q') {
 			gameover = true;
 		}
 	}
 }
 
 int main() {
-	do 
+
+	do
 	{
 		print();
 		move_eat();
 		game();
-		cout << "分数:" << score << endl;
-		/*if (D==Stop) {
-			for (int k = 0;k < score;k++) {
-				cout <<"xtail["<<k<<"]"<< xtail[k] << " ";
-			}
-			cout << endl;
-			for (int k = 0;k < score;k++) {
-				cout << "ytail[" << k << "]" << ytail[k] << " ";
-			}
-			cout << endl;
-			cout << "x,y:" << x <<" "<< y << endl;
-			cout <<"tailx1:"<< tailx1 << " " << "taily1:"<<taily1 << endl << "tailx2:" << tailx2 << " " << "taily2:" << taily2 << endl;
-		}*/
-	} while (gameover==false);
+		cout << "$:" << score << endl;
+		
+	} while (gameover == false);
 	cout << "游戏结束" << endl;
-	
 	system("Pause");
 }
-
